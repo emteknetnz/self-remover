@@ -42,7 +42,7 @@ $composerRepos = [
     'symbiote/silverstripe-advancedworkflow',
     'symbiote/silverstripe-gridfieldextensions',
     'symbiote/silverstripe-queuedjobs',
-    'tractorcow/silverstripe-fluent',
+    // 'tractorcow/silverstripe-fluent',
 ];
 
 $token = getenv('TOKEN');
@@ -138,7 +138,7 @@ foreach ($composerRepos as $composerRepo) {
         'body' => 'Issue https://github.com/silverstripe/developer-docs/issues/486',
     ];
     $json = github_api($url, $data, 'POST');
-    $prUrls[] = $json['url'];
+    $prUrls[] = $json['html_url'];
 }
 
 // print urls
