@@ -65,9 +65,13 @@ foreach ($accounts as $account) {
             $c = str_replace($pattern, $replacement, $c);
             if ($c != $orig) {
                 file_put_contents($file, $c);
-                echo "Updated $file\n";
+                $reposUpdated[$repo] = true;
             }
         }
     }
-    echo "Scanned $path\n";
+}
+
+echo "Updated the following repos:\n";
+foreach ($reposUpdated as $repo => $true) {
+    echo "$repo\n";
 }
