@@ -66,12 +66,25 @@ foreach ($accounts as $account) {
         $shortName = basename($file, '.php');
         $c = file_get_contents($file);
         $orig = $c;
-        foreach ($patterns as $pattern) {
-            $replacement = str_replace('self', $shortName, $pattern);
-            $c = str_replace($pattern, $replacement, $c);
-            if ($c != $orig) {
-                file_put_contents($file, $c);
-                $reposUpdated[$repo] = true;
+        $isTrait = strpos($c, "\ntrait $shortName") !== false;
+        if ($isTrait) {
+            // reverse out code changes previous made
+            foreach ($patterns as $pattern) {
+                $find = str_replace('self', $shortName, $pattern);
+                $c = str_replace($find, $pattern, $c);
+                if ($c != $orig) {
+                    file_put_contents($file, $c);
+                    $reposUpdated[$repo] = true;
+                }
+            }
+        } else {
+            foreach ($patterns as $pattern) {
+                $replacement = str_replace('self', $shortName, $pattern);
+                $c = str_replace($pattern, $replacement, $c);
+                if ($c != $orig) {
+                    file_put_contents($file, $c);
+                    $reposUpdated[$repo] = true;
+                }
             }
         }
     }
