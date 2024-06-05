@@ -13,8 +13,14 @@ $accounts = [
 $patterns = [
     'self::',
     ': self',
+    ': ?self',
     '@return self',
-    'new self('
+    '@return  self',
+    'new self(',
+    'new self;',
+    'instanceof self)',
+    'instanceof self;',
+    '@var self',
 ];
 
 function php_files($path, &$files = []) {
