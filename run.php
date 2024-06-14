@@ -10,6 +10,10 @@ $accounts = [
     'tractorcow',
 ];
 
+$replacePatterns = [
+    'self::config()' => 'static::config()'
+];
+
 $patterns = [
     'self::',
     ': self',
@@ -78,6 +82,13 @@ foreach ($accounts as $account) {
                 }
             }
         } else {
+            foreach ($replacePatterns as $pattern => $replacement) {
+                $c = str_replace($pattern, $replacement, $c);
+                if ($c != $orig) {
+                    file_put_contents($file, $c);
+                    $reposUpdated[$repo] = true;
+                }
+            }
             foreach ($patterns as $pattern) {
                 $replacement = str_replace('self', $shortName, $pattern);
                 $c = str_replace($pattern, $replacement, $c);
