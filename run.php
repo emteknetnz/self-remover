@@ -27,6 +27,14 @@ $patterns = [
     '@var self',
 ];
 
+$traitPregReplacements = [
+    '#self::([a-zA-Z]+)\(#' => 'self::class::$1(',
+];
+
+// only updating traits right now
+$patterns = [];
+$replacePatterns = [];
+
 function php_files($path, &$files = []) {
     if (!is_dir($path)) {
         return;
@@ -72,15 +80,23 @@ foreach ($accounts as $account) {
         $orig = $c;
         $isTrait = strpos($c, "\ntrait $shortName") !== false;
         if ($isTrait) {
-            // reverse out code changes previous made
-            foreach ($patterns as $pattern) {
-                $find = str_replace('self', $shortName, $pattern);
-                $c = str_replace($find, $pattern, $c);
+            foreach ($traitPregReplacements as $rx => $replacement) {
+                $c = preg_replace($rx, $replacement, $c);
                 if ($c != $orig) {
                     file_put_contents($file, $c);
                     $reposUpdated[$repo] = true;
                 }
             }
+            // reverse out code changes previous made
+            // foreach ($patterns as $pattern) {
+            //     $find = str_replace('self', $shortName, $pattern);
+            //     $c = str_replace($find, $pattern, $c);
+            //     if ($c != $orig) {
+            //         file_put_contents($file, $c);
+            //         $reposUpdated[$repo] = true;
+            //     }
+            // }
+
         } else {
             foreach ($replacePatterns as $pattern => $replacement) {
                 $c = str_replace($pattern, $replacement, $c);
